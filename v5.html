@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>마영전 데미지 공식 변천사 통합 분석기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; }
+        .main-container { max-width: 1600px; margin: 0 auto; }
+        .header-title { text-align: center; font-size: 30px; font-weight: bold; }
+        .calculator-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; align-items: stretch; }
+        .calc-panel { width: 300px; border: 1px solid #ccc; border-radius: 5px; padding: 10px; display: flex; flex-direction: column; }
+        .calc-panel h5 { text-align: center; font-weight: bold; margin-bottom: 15px; }
+        .calc-panel .content { flex-grow: 1; }
+        .calc-panel .button-group { margin-top: auto; }
+        .calc-panel input { width: 100%; font-size: 13px; }
+        .calc-panel table { width: 100%; }
+        .calc-panel td:first-child { width: 50%; }
+        .result-panel { text-align: center; font-size: 16px; font-weight: bold; margin-top: 20px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9; }
+        .result-panel h4 { font-weight: bold; }
+        .result-panel table { margin: 0 auto; width: auto; }
+        .result-panel th, .result-panel td { padding: 5px 15px; text-align: right; }
+        .result-panel th { text-align: left; }
+        .final-proposal b { color: #0d6efd; }
+        .readonly-input { background-color: #e9ecef; }
+        .zone-display { text-align: center; font-size: 12px; font-weight: bold; padding: 5px; color: #6c757d; min-height: 28px;}
+    </style>
+</head>
+<body>
+    <div class='main-container container'>
+        <hr><div class='header-title'>마영전 데미지 공식 변천사 통합 분석기</div>
+        <div style='text-align: center; font-size: 14px;'>by Gemini AI (with user MintRisha)</div><hr>
+        
+        <div class="mb-3">
+            <label for="boss" class="form-label" style="font-weight:bold;">대상 보스 선택:</label>
+            <select id="boss" class="form-select" onchange="updateBreakpointInfo()">
+                 <option label="루시안" value="lucian" selected></option>
+                 <option label="모르간트" value="morgant"></option>
+                 <option label="고르바스" value="gorbas"></option>
+                 <option label="스피노스" value="spinos"></option>
+                 <option label="스렝" value="sreng"></option>
+                 <option label="브레스" value="bres"></option>
+                 <option label="야르니르" value="jarnir"></option>
+                 <option label="에메트" value="emmet"></option>
+                 <option label="이루산" value="irusan"></option>
+                 <option label="에녹" value="enok"></option>
+                 <option label="카사르" value="ceasair"></option>
+                 <option label="밀레드" value="milo"></option>
+                 <option label="나베리우스" value="naberius"></option>
+                 <option label="로메르" value="romel"></option>
+                 <option label="라우라" value="laura" ></option>
+                 <option label="브리지트" value="brigit"></option>
+                 <option label="발로르" value="balor" ></option>
+                 <option label="네반" value="neamhain"></option>
+                 <option label="[시공간 왜곡] 요르드라" value="jordra"></option>
+                 <option label="[시공간 왜곡] 아이젠리터" value="eisenritter"></option>
+                 <option label="[시공간 왜곡] 타로스" value="taros"></option>
+            </select>
+            <!-- 변경점: 현재 적용되는 파괴력 기준점을 표시하는 UI 피드백 영역 추가 -->
+            <div id="breakpoint_info" class="text-center text-danger fw-bold my-2"></div>
+        </div>
+
+        <div class="calculator-grid">
+            <!-- Panel 1: 기존 공식 -->
+            <div id='panel1' class="calc-panel">
+                <h5>기존 공식 (본 서버)</h5>
+                <div class="content">
+                    <table>
+                        <tr><td>공격력</td><td><input id='atk1' value='77000'></td></tr>
+                        <tr><td>추가피해</td><td><input id='add1' value='9225'></td></tr>
+                        <tr style="color: blue;"><td>공격력 제한 해제</td><td><input id='alr1' value='18290'></td></tr>
+                        <tr><td>밸런스</td><td><input id='bal1' value='177'></td></tr>
+                        <tr><td>크리티컬</td><td><input id='cri1' value='336'></td></tr>
+                        <tr style="color: blue;"><td>대항력</td><td><input id='counterforce1' value='440'></td></tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center; font-size:12px;">
+                                <label for='swordl1'>검시타</label><input style='width: auto; vertical-align: middle; margin-left: 3px;' type="checkbox" id="swordl1">
+                                <label for='spearl1' style="margin-left:10px;">창시타</label><input style='width: auto; vertical-align: middle; margin-left: 3px;' type="checkbox" id="spearl1">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-info w-100 mt-2 btn-sm" onclick='syncData();'>모든 버전에 스펙 동기화</button>
+                    <button class="btn btn-secondary w-100 mt-1" onclick='exec(1);'>계산</button>
+                </div>
+                <hr>
+                <table>
+                    <tr><td>기대 데미지 (크리 미포함)</td><td><input id='nocritdmg1' class="readonly-input" readonly></td></tr>
+                    <tr><td>기대 데미지 (크리 포함)</td><td><input id='critdmg1' class="readonly-input" readonly></td></tr>
+                </table>
+            </div>
+
+            <!-- Panel 2: 9/10 패치 -->
+            <div id='panel2' class="calc-panel">
+                <h5>9/10 패치</h5>
+                <div class="content">
+                    <table>
+                        <tr><td>공격력</td><td><input id='atk2'></td></tr>
+                        <tr><td>추가피해</td><td><input id='add2'></td></tr>
+                        <tr style="color: red;"><td>파괴력 (LIVE 수치)</td><td><input id='dest2'></td></tr>
+                        <tr><td>밸런스</td><td><input id='bal2'></td></tr>
+                        <tr><td>크리티컬</td><td><input id='cri2'></td></tr>
+                        <tr style="color: red;"><td>방어력 관통</td><td><input id='pen2'></td></tr>
+                    </table>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-dark w-100 mt-2" onclick='exec(2);'>계산</button>
+                </div>
+                <hr>
+                <div class="zone-display" id="zone_display2"></div>
+                <table>
+                    <tr><td>기대 데미지 (크리 미포함)</td><td><input id='nocritdmg2' class="readonly-input" readonly></td></tr>
+                    <tr><td>기대 데미지 (크리 포함)</td><td><input id='critdmg2' class="readonly-input" readonly></td></tr>
+                </table>
+            </div>
+
+            <!-- Panel 3: 9/17 패치 -->
+            <div id='panel3' class="calc-panel">
+                 <h5>9/17 패치</h5>
+                <div class="content">
+                    <table>
+                        <tr><td>공격력</td><td><input id='atk3'></td></tr>
+                        <tr><td>추가피해</td><td><input id='add3'></td></tr>
+                        <tr style="color: red;"><td>파괴력 (LIVE 수치)</td><td><input id='dest3'></td></tr>
+                        <tr><td>밸런스</td><td><input id='bal3'></td></tr>
+                        <tr><td>크리티컬</td><td><input id='cri3'></td></tr>
+                        <tr style="color: red;"><td>방어력 관통</td><td><input id='pen3'></td></tr>
+                    </table>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-dark w-100 mt-2" onclick='exec(3);'>계산</button>
+                </div>
+                <hr>
+                 <div class="zone-display" id="zone_display3"></div>
+                <table>
+                    <tr><td>기대 데미지 (크리 미포함)</td><td><input id='nocritdmg3' class="readonly-input" readonly></td></tr>
+                    <tr><td>기대 데미지 (크리 포함)</td><td><input id='critdmg3' class="readonly-input" readonly></td></tr>
+                </table>
+            </div>
+
+            <!-- Panel 4: 9/24 패치 -->
+            <div id='panel4' class="calc-panel">
+                <h5>9/24 패치</h5>
+                <div class="content">
+                    <table>
+                        <tr><td>공격력</td><td><input id='atk4'></td></tr>
+                        <tr><td>추가피해</td><td><input id='add4'></td></tr>
+                        <tr style="color: red;"><td>파괴력 (LIVE 수치)</td><td><input id='dest4'></td></tr>
+                        <tr><td>밸런스</td><td><input id='bal4'></td></tr>
+                        <tr><td>크리티컬</td><td><input id='cri4'></td></tr>
+                        <tr style="color: red;"><td>방어력 관통</td><td><input id='pen4'></td></tr>
+                    </table>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-danger w-100 mt-2" onclick='exec(4);'>계산</button>
+                </div>
+                <hr>
+                <div class="zone-display" id="zone_display4"></div>
+                <table>
+                    <tr><td style="color: #dc3545; font-size:12px;">유효 파괴력 (자동)</td><td><input id='eff_dest4' class="readonly-input" readonly></td></tr>
+                    <tr><td>기대 데미지 (크리 미포함)</td><td><input id='nocritdmg4' class="readonly-input" readonly></td></tr>
+                    <tr><td>기대 데미지 (크리 포함)</td><td><input id='critdmg4' class="readonly-input" readonly></td></tr>
+                </table>
+            </div>
+
+            <!-- Panel 5: 최종 개선안 -->
+            <div id='panel5' class="calc-panel">
+                <h5>최종 개선안(10/15 Test)</h5>
+                <div class="content">
+                    <table>
+                        <tr><td>공격력</td><td><input id='atk5'></td></tr>
+                        <tr><td>추가피해</td><td><input id='add5'></td></tr>
+                        <tr style="color: red;"><td>파괴력 (LIVE 수치)</td><td><input id='dest5'></td></tr>
+                        <tr><td>밸런스</td><td><input id='bal5'></td></tr>
+                        <tr><td>크리티컬</td><td><input id='cri5'></td></tr>
+                        <tr style="color: red;"><td>방어력 관통</td><td><input id='pen5'></td></tr>
+                    </table>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary w-100 mt-2" onclick='exec(5);'>계산</button>
+                </div>
+                <hr>
+                <div class="zone-display" id="zone_display5"></div>
+                <table>
+                    <tr><td style="color: #0d6efd; font-size:12px;">유효 파괴력 (자동)</td><td><input id='eff_dest5' class="readonly-input" readonly></td></tr>
+                    <tr><td>기대 데미지 (크리 미포함)</td><td><input id='nocritdmg5' class="readonly-input" readonly></td></tr>
+                    <tr><td>기대 데미지 (크리 포함)</td><td><input id='critdmg5' class="readonly-input" readonly></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="result-panel">
+            <h4>기존 공식 대비 상승률</h4>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr><th>버전</th><th>기대 데미지 (크리 포함)</th><th>상승률</th></tr>
+                </thead>
+                <tbody>
+                    <tr id="row_1"><th>기존 공식</th><td id="res_critdmg1">N/A</td><td id="compare_1">기준</td></tr>
+                    <tr id="row_2"><th>9/10 패치</th><td id="res_critdmg2">N/A</td><td id="compare_2">N/A</td></tr>
+                    <tr id="row_3"><th>9/17 패치</th><td id="res_critdmg3">N/A</td><td id="compare_3">N/A</td></tr>
+                    <tr id="row_4"><th>9/24 패치</th><td id="res_critdmg4">N/A</td><td id="compare_4">N/A</td></tr>
+                    <tr id="row_5" class="final-proposal"><th>최종 개선안</th><td id="res_critdmg5">N/A</td><td id="compare_5">N/A</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+    </div>
+    
+    <script>
+        // 변경점 1: bossstat 객체에 type 속성 추가 ('special' 또는 'normal')
+        const bossstat = {
+            lucian: { def: 49120, res: 286, bosscounterforce: 266, bosscounterforcemindmg: 30, bossbalforce: 77, type: 'normal' },
+            morgant: { def: 48620, res: 281, bosscounterforce: 236, bosscounterforcemindmg: 30, bossbalforce: 72, type: 'normal' },
+            gorbas: { def: 47920, res: 276, bosscounterforce: 216, bosscounterforcemindmg: 30, bossbalforce: 64, type: 'normal' },
+            spinos: { def: 45920, res: 261, bosscounterforce: 196, bosscounterforcemindmg: 30, bossbalforce: 56, type: 'normal' },
+            sreng: { def: 43920, res: 246, bosscounterforce: 186, bosscounterforcemindmg: 30, bossbalforce: 53, type: 'normal' },
+            bres: { def: 43860, res: 240, bosscounterforce: 156, bosscounterforcemindmg: 30, bossbalforce: 44, type: 'normal' },
+            jarnir: { def: 42230, res: 226, bosscounterforce: 136, bosscounterforcemindmg: 30, bossbalforce: 37, type: 'normal' },
+            emmet: { def: 40180, res: 214, bosscounterforce: 116, bosscounterforcemindmg: 30, bossbalforce: 28, type: 'normal' },
+            irusan: { def: 38780, res: 206, bosscounterforce: 116, bosscounterforcemindmg: 30, bossbalforce: 20, type: 'normal' },
+            enok: { def: 37780, res: 204, bosscounterforce: 116, bosscounterforcemindmg: 30, bossbalforce: 16, type: 'normal' },
+            ceasair: { def: 37780, res: 195, bosscounterforce: 108, bosscounterforcemindmg: 30, bossbalforce: 14, type: 'normal' },
+            milo: { def: 35920, res: 188, bosscounterforce: 100, bosscounterforcemindmg: 30, bossbalforce: 12, type: 'normal' },
+            naberius: { def: 34110, res: 181, bosscounterforce: 92, bosscounterforcemindmg: 30, bossbalforce: 9, type: 'normal' },
+            romel: { def: 32300, res: 175, bosscounterforce: 88, bosscounterforcemindmg: 30, bossbalforce: 7, type: 'normal' },
+            laura: { def: 35500, res: 185, bosscounterforce: 0, bosscounterforcemindmg: 100, bossbalforce: 4, type: 'special' },
+            brigit: { def: 30000, res: 150, bosscounterforce: 0, bosscounterforcemindmg: 100, bossbalforce: 0, type: 'special' },
+            balor: { def: 23500, res: 123, bosscounterforce: 0, bosscounterforcemindmg: 100, bossbalforce: 0, type: 'special' },
+            neamhain: { def: 17000, res: 90, bosscounterforce: 0, bosscounterforcemindmg: 100, bossbalforce: 0, type: 'special' },
+            jordra: { def: 45000, res: 305, bosscounterforce: 300, bosscounterforcemindmg: 30, bossbalforce: 100, type: 'special' },
+            eisenritter: { def: 42850, res: 254, bosscounterforce: 220, bosscounterforcemindmg: 30, bossbalforce: 59, type: 'special' },
+            taros: { def: 40000, res: 229, bosscounterforce: 180, bosscounterforcemindmg: 30, bossbalforce: 34, type: 'special' },
+        };
+        
+        function syncData() {
+            const sourcePanel = 1;
+            for (let i = 2; i <= 5; i++) {
+                if(document.querySelector(`#atk${i}`)){
+                    document.querySelector(`#atk${i}`).value = document.querySelector(`#atk${sourcePanel}`).value;
+                    document.querySelector(`#add${i}`).value = document.querySelector(`#add${sourcePanel}`).value;
+                    document.querySelector(`#bal${i}`).value = document.querySelector(`#bal${sourcePanel}`).value;
+                    document.querySelector(`#cri${i}`).value = document.querySelector(`#cri${sourcePanel}`).value;
+                    document.querySelector(`#dest${i}`).value = document.querySelector(`#alr${sourcePanel}`).value;
+                    document.querySelector(`#pen${i}`).value = document.querySelector(`#counterforce${sourcePanel}`).value;
+                }
+            }
+            alert("모든 버전의 스펙이 '기존 공식' 기준으로 동기화되었습니다.");
+        }
+
+        function execAll() {
+            syncData();
+            for(let i=1; i<=5; i++){
+                if(document.querySelector(`#panel${i}`)){
+                    exec(i);
+                }
+            }
+        }
+    
+        function getCommonInputs(num) {
+            const bossKey = document.querySelector('select#boss').value;
+            const boss = bossstat[bossKey];
+            const atk = parseFloat(document.querySelector(`#atk${num}`).value);
+            const add = parseFloat(document.querySelector(`#add${num}`).value);
+            const cri = parseFloat(document.querySelector(`#cri${num}`).value);
+            const bal = parseFloat(document.querySelector(`#bal${num}`).value);
+            return { boss, atk, add, cri, bal };
+        }
+    
+        function exec(num) {
+            let { boss, atk, add, cri, bal } = getCommonInputs(num);
+            let dmg_result, effectiveDest, zone_text;
+    
+            if (num === 1) {
+                const alr = parseFloat(document.querySelector('#alr1').value);
+                const counterforce = parseFloat(document.querySelector('#counterforce1').value);
+                const swordl = document.querySelector('#swordl1').checked;
+                const spearl = document.querySelector('#spearl1').checked;
+                let bal_for_old = bal - boss.bossbalforce;
+                
+                dmg_result = calcdmg_old(boss, atk, add, alr, bal_for_old, cri, counterforce, swordl, spearl);
+                document.querySelector('#nocritdmg1').value = dmg_result[0].toFixed(2);
+                document.querySelector('#critdmg1').value = dmg_result[1].toFixed(2);
+            } else {
+                let pen, dest;
+                dest = parseFloat(document.querySelector(`#dest${num}`).value);
+                pen = parseFloat(document.querySelector(`#pen${num}`).value);
+
+                // 변경점 2: 선택된 보스의 타입에 따라 파괴력 기준점을 동적으로 결정
+                const destructionBreakpoint = (boss.type === 'special') ? 11550 : 12050;
+                
+                if (num === 2) { 
+                    [dmg_result, zone_text] = calcdmg_9_10(boss, atk, add, dest, pen, bal, cri);
+                } else if (num === 3) {
+                    [dmg_result, zone_text] = calcdmg_9_17(boss, atk, add, dest, pen, bal, cri);
+                } else if (num === 4) {
+                    [dmg_result, effectiveDest, zone_text] = calcdmg_9_24(boss, atk, add, dest, pen, bal, cri, destructionBreakpoint);
+                } else if (num === 5) {
+                    [dmg_result, effectiveDest, zone_text] = calcdmg_final_proposal(boss, atk, add, dest, pen, bal, cri, destructionBreakpoint);
+                }
+                document.querySelector(`#nocritdmg${num}`).value = dmg_result[0].toFixed(2);
+                document.querySelector(`#critdmg${num}`).value = dmg_result[1].toFixed(2);
+                if(document.querySelector(`#eff_dest${num}`)){
+                     document.querySelector(`#eff_dest${num}`).value = Math.round(effectiveDest);
+                }
+                if(document.querySelector(`#zone_display${num}`)){
+                    document.querySelector(`#zone_display${num}`).innerText = zone_text;
+                }
+            }
+            updateAllComparisons();
+        }
+        
+        function calcdmg_old(boss, atk, add, alr, bal, cri, counterforce, swordl, spearl) {
+            let att = Math.max(Math.min(10000 + alr, atk - boss.def), 0);
+            let base;
+            if (att <= (boss.def * 2)) {
+                let x = (att + 900) / (boss.def + 900);
+                let fx = 0.1856 + 0.5525 * x + 0.4214 * Math.pow(x, 2) - 0.3094 * Math.pow(x, 3) + 0.3643 * Math.pow(x, 4) - 0.2144 * Math.pow(x, 5);
+                base = (boss.def + 900) * fx;
+            } else {
+                base = (boss.def + 900) + (att - 2 * boss.def);
+            }
+            let adm;
+            if (att <= 3000) adm = 1.875;
+            else if (att <= 10000) adm = 6.25 * att / 10000;
+            else adm = 6.25 + (att - 10000) / 2400;
+            let effcrit;
+            if (swordl) effcrit = Math.max(Math.min(65, cri + 15 - boss.res), 3);
+            else if (spearl) effcrit = Math.max(Math.min(65, cri + 22 - boss.res), 3);
+            else effcrit = Math.max(Math.min(50, cri - boss.res), 3);
+            
+            let nocritdmg = (base + add * adm) * (Math.min(bal, 100) + 100) / 200;
+            
+            if (boss.bosscounterforce > 0) {
+                let ddm = Math.min((boss.bosscounterforcemindmg + (70 * counterforce / (boss.bosscounterforce + 100))), 100) / 100;
+                nocritdmg = nocritdmg * ddm;
+            }
+            let critdmg;
+            let crit_multiplier = 1.95;
+            if (swordl) crit_multiplier = 2.25;
+            critdmg = nocritdmg * (crit_multiplier * (effcrit / 100) + 1 * ((100 - effcrit) / 100));
+            return [nocritdmg, critdmg];
+        }
+    
+        function calculateNewSystemDamage(boss, atk, add, dest, pen, bal, cri, pen_multiplier, dest_multiplier, atk_curve) {
+            let effectiveDest = dest;
+            // 변경점 3: atk_curve 객체에 dest_weight_breakpoint가 존재하고, 유효한 숫자일 때만 가중치 계산
+            if (atk_curve.dest_weight_breakpoint && dest > atk_curve.dest_weight_breakpoint) {
+                effectiveDest = atk_curve.dest_weight_breakpoint + (dest - atk_curve.dest_weight_breakpoint) * 3;
+            }
+    
+            const raw_x = atk - boss.def;
+            let curved_atk;
+            let zone_text = "";
+    
+            if (raw_x < 0) {
+                curved_atk = raw_x;
+                zone_text = "공격력 부족";
+            } else if (raw_x <= atk_curve.p1) {
+                curved_atk = raw_x;
+                zone_text = "구간 1: 100% 효율";
+            } else if (raw_x <= atk_curve.p2) {
+                curved_atk = atk_curve.a * raw_x*raw_x + atk_curve.b * raw_x + atk_curve.c;
+                zone_text = "구간 2: 점감 곡선";
+            } else {
+                curved_atk = atk_curve.final_slope * raw_x + atk_curve.final_intercept;
+                zone_text = "구간 3: 최종 저효율";
+            }
+            
+            const applied_atk = Math.max(0, curved_atk + (pen * pen_multiplier));
+    
+            let base;
+            if (applied_atk <= (boss.def * 2)) {
+                let x_base = (applied_atk + 900) / (boss.def + 900);
+                let fx = 0.1856 + 0.5525 * x_base + 0.4214 * Math.pow(x_base, 2) - 0.3094 * Math.pow(x_base, 3) + 0.3643 * Math.pow(x_base, 4) - 0.2144 * Math.pow(x_base, 5);
+                base = (boss.def + 900) * fx;
+            } else {
+                base = (boss.def + 900) + (applied_atk - 2 * boss.def);
+            }
+            let adm;
+            if (applied_atk <= 3000) adm = 1.875;
+            else if (applied_atk <= 10000) adm = 6.25 * applied_atk / 10000;
+            else adm = 6.25 + (applied_atk - 10000) / 2400;
+    
+            let effcrit = Math.max(Math.min(50, cri - boss.res), 3);
+            let effective_bal = Math.min(Math.max(0, bal - boss.bossbalforce), 100);
+            let nocrit_base = (base + add * adm) * (effective_bal + 100) / 200;
+            
+            let final_nocrit_dmg = nocrit_base * (1 + effectiveDest * dest_multiplier);
+            let crit_multiplier = 1.95;
+            let critdmg = final_nocrit_dmg * (crit_multiplier * (effcrit / 100) + 1 * ((100 - effcrit) / 100));
+            
+            return [[final_nocrit_dmg, critdmg], effectiveDest, zone_text];
+        }
+        
+        function calcdmg_9_10(boss, atk, add, dest, pen, bal, cri) {
+            const curve = { p1: 18000, p2: 28000, a: -0.00004, b: 2.44, c: -12960, final_slope: 0.2, final_intercept: 18400 };
+            return calculateNewSystemDamage(boss, atk, add, dest, pen, bal, cri, 5, 0.00001, curve);
+        }
+    
+        function calcdmg_9_17(boss, atk, add, dest, pen, bal, cri) {
+            const curve = { p1: 10000, p2: 20000, a: -0.000045, b: 1.9, c: -4500, final_slope: 0.1, final_intercept: 13500 };
+            return calculateNewSystemDamage(boss, atk, add, dest, pen, bal, cri, 5, 0.00003, curve);
+        }
+    
+        // 변경점 4: 함수가 destructionBreakpoint를 인자로 받아 curve 객체에 설정하도록 수정
+        function calcdmg_9_24(boss, atk, add, dest, pen, bal, cri, destructionBreakpoint) {
+            const curve = { p1: 6000, p2: 16000, a: -0.000045, b: 1.54, c: -1620, final_slope: 0.1, final_intercept: 9900, dest_weight_breakpoint: destructionBreakpoint };
+            return calculateNewSystemDamage(boss, atk, add, dest, pen, bal, cri, 8, 0.000022, curve);
+        }
+    
+        function calcdmg_final_proposal(boss, atk, add, dest, pen, bal, cri, destructionBreakpoint) {
+            const curve = { p1: 4000, p2: 22000, a: -0.000025, b: 1.68, c: -400, final_slope: 0.1, final_intercept: 11700, dest_weight_breakpoint: destructionBreakpoint };
+            return calculateNewSystemDamage(boss, atk, add, dest, pen, bal, cri, 8, 0.000022, curve);
+        }
+        
+        function updateAllComparisons() {
+            const baseDmg = parseFloat(document.querySelector('#critdmg1').value);
+            if (isNaN(baseDmg) || baseDmg <= 0) return;
+    
+            const versions = [ { num: 2, name: "9/10 패치" }, { num: 3, name: "9/17 패치" }, { num: 4, name: "9/24 패치" }, { num: 5, name: "최종 개선안" }];
+    
+            versions.forEach(version => {
+                if(document.querySelector(`#panel${version.num}`)){
+                    const dmg = parseFloat(document.querySelector(`#critdmg${version.num}`).value);
+                    const critDmgCell = document.querySelector(`#res_critdmg${version.num}`);
+                    const compareCell = document.querySelector(`#compare_${version.num}`);
+                    
+                    if (!isNaN(dmg) && dmg > 0) {
+                        critDmgCell.innerText = Math.round(dmg).toLocaleString();
+                        const increase = ((dmg - baseDmg) / baseDmg) * 100;
+                        let color = increase >= 0 ? '#0d6efd' : '#dc3545';
+                        compareCell.innerHTML = `<b style="color:${color};">${increase.toFixed(2)}%</b>`;
+                    } else {
+                        critDmgCell.innerText = `N/A`;
+                        compareCell.innerHTML = `N/A`;
+                    }
+                }
+            });
+            document.querySelector('#res_critdmg1').innerText = Math.round(baseDmg).toLocaleString();
+        }
+
+        // 변경점 5: 페이지 로드 및 보스 변경 시, 현재 기준점을 표시하는 함수 추가
+        function updateBreakpointInfo() {
+            const bossKey = document.querySelector('select#boss').value;
+            const boss = bossstat[bossKey];
+            const breakpoint = (boss.type === 'special') ? 11550 : 12050;
+            const infoDiv = document.getElementById('breakpoint_info');
+            if (boss.type === 'special') {
+                infoDiv.innerText = `※ 결사대/시공간 보너스 적용 중: 파괴력 ${breakpoint.toLocaleString()} 부터 3배 가중치 적용`;
+            } else {
+                infoDiv.innerText = `※ 일반 레이드 기준 적용 중: 파괴력 ${breakpoint.toLocaleString()} 부터 3배 가중치 적용`;
+            }
+        }
+    
+        window.onload = function() {
+            updateBreakpointInfo(); // 페이지 로드 시 최초 실행
+            execAll();
+        }
+    </script>
+</body>
+</html>
