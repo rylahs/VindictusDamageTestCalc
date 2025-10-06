@@ -414,7 +414,7 @@
         }
     
         function calcdmg_final_proposal(boss, atk, add, dest, pen, bal, cri, destructionBreakpoint) {
-            const curve = { p1: 4000, p2: 22000, a: -0.000025, b: 1.68, c: -400, final_slope: 0.1, final_intercept: 11700, dest_weight_breakpoint: destructionBreakpoint };
+            const curve = { p1: 4000, p2: 22000, a: -0.000025, b: 1.2, c: -400, final_slope: 0.1, final_intercept: 11700, dest_weight_breakpoint: destructionBreakpoint };
             return calculateNewSystemDamage(boss, atk, add, dest, pen, bal, cri, 8, 0.000022, curve);
         }
         
