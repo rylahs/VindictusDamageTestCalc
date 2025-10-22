@@ -37,7 +37,8 @@
         <div class="mb-3">
             <label for="boss" class="form-label" style="font-weight:bold;">대상 보스 선택:</label>
             <select id="boss" class="form-select" onchange="updateBreakpointInfo()">
-                 <option label="루시안" value="lucian" selected></option>
+                 <option label="세미아스" value="semias" selected></option>
+                 <option label="루시안" value="lucian"></option>
                  <option label="모르간트" value="morgant"></option>
                  <option label="고르바스" value="gorbas"></option>
                  <option label="스피노스" value="spinos"></option>
@@ -214,6 +215,7 @@
     <script>
         // 변경점 1: bossstat 객체에 type 속성 추가 ('special' 또는 'normal')
         const bossstat = {
+             semias: { def: 50120, res: 296, bosscounterforce: 286, bosscounterforcemindmg: 30, bossbalforce: 87, type: 'normal' },
             lucian: { def: 49120, res: 286, bosscounterforce: 266, bosscounterforcemindmg: 30, bossbalforce: 77, type: 'normal' },
             morgant: { def: 48620, res: 281, bosscounterforce: 236, bosscounterforcemindmg: 30, bossbalforce: 72, type: 'normal' },
             gorbas: { def: 47920, res: 276, bosscounterforce: 216, bosscounterforcemindmg: 30, bossbalforce: 64, type: 'normal' },
